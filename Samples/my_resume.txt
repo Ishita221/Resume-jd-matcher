@@ -1,0 +1,39 @@
+ISHITA SRIMALI
+Lucknow, UP
++91 9005105598 | ishitasrimali@gmail.com | LinkedIn
+
+EDUCATION
+Ambalika Institute of Management and Technology | July 2024 - Present
+B.Tech in CSE | CGPA: 8.23/10
+
+CAREER OBJECTIVE
+Curious and driven Computer Science undergraduate passionate about software development and artificial intelligence. I aim to strengthen my skills in C++, Python, and Full Stack Web Development, while contributing to innovative projects that combine creativity and technology.
+
+PROJECTS
+Portfolio Website | June 2025
+Developed a personal portfolio using HTML, CSS, and JavaScript to showcase projects and skills.
+Gained hands-on experience in responsive design, version control, and frontend best practices.
+
+Hackathon Project - Smart India Hackathon 2025 (Team Lead)
+Leading a 5-member team in SIH 2025, building a full-stack solution addressing real-world challenges.
+Responsibilities include planning, frontend design, team coordination, and integration.
+
+TECHNICAL STRENGTHS
+Languages: C++, Python, C, SQL
+Web Technologies: HTML5, CSS3, React (learning), Node.js (learning)
+Core Subjects: DSA, Artificial Intelligence, DBMS, Operating Systems
+Tools: Git, Visual Studio Code, Microsoft Office, PowerPoint
+
+CERTIFICATIONS
+Udemy, Online
+Completed an in-depth course on C++ and Data Structures, strengthening problem-solving and programming fundamentals.
+Currently pursuing Full Stack Web Development, learning HTML, CSS, JavaScript, and React for dynamic web applications.
+
+Smart India Hackathon 2025
+Participating as Team Lead in SIH 2025, developing a full-stack solution addressing real-world challenges.
+
+SOFT SKILLS
+Leadership, Problem Solving, Teamwork, Communication, Adaptability
+
+INTERESTS
+Full Stack Development, Artificial Intelligence, Hackathons, Open-Source Learning
