@@ -10,6 +10,19 @@ load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 MODEL_NAME = "gemini-3.1-flash-lite"
 
+if "history" not in st.session_state:
+    st.session_state.history = []
+def clear_inputs():
+    st.session_state.resume_input = ""
+    st.session_state.jd_input = ""
+
+
+def clear_history():
+    st.session_state.history = []
+
+
+    
+
 st.set_page_config(page_title="Resume ↔ JD Matcher", page_icon="🎯", layout="wide")
 
 st.markdown("""
@@ -154,12 +167,12 @@ with left:
             except Exception as e:
                 st.error(f"Could not read file: {e}")
     else:
-        resume = st.text_area("Or paste it here", height=280, label_visibility="collapsed",
+        resume = st.text_area("Or paste it here", height=280,key="resume_input", label_visibility="collapsed",
                               placeholder="Paste your resume...")
 
 with right:
     st.markdown('<div class="panel-title">Job Description</div>', unsafe_allow_html=True)
-    jd = st.text_area("JD", height=340, label_visibility="collapsed",
+    jd = st.text_area("JD", height=340, key="jd_input",label_visibility="collapsed",
                       placeholder="Paste the job description...")
 
 st.divider()
@@ -179,6 +192,12 @@ if st.button("Analyze", type="primary", use_container_width=True):
                 raw = response.text.strip()
                 raw = raw.replace("```json", "").replace("```", "").strip()
                 data = json.loads(raw)
+
+                st.session_state.history.append({
+                    "score": data["match_score"],
+                    "jd": jd.strip()[:70],
+                    "missing": data["missing_skills"],
+                })
 
                 score = data["match_score"]
                 if score >= 75:
@@ -230,3 +249,24 @@ if st.button("Analyze", type="primary", use_container_width=True):
                 st.code(raw)
             except Exception as e:
                 st.error(f"Failed: {e}")
+
+
+if st.session_state.history:
+    st.divider()
+
+    with st.expander(f"Previous runs ({len(st.session_state.history)})"):
+        for h in reversed(st.session_state.history):
+            hue = "#34D399" if h["score"] >= 75 else "#FBBF24" if h["score"] >= 50 else "#FB7185"
+            gaps = ", ".join(h["missing"][:3]) or "—"
+            st.markdown(f"""
+            <div class="card">
+                <b style="color:{hue}">{h['score']}/100</b> — {h['jd']}...
+                <div style="color:#64748B;font-size:.82rem;margin-top:5px">Missing: {gaps}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    b1, b2 = st.columns(2)
+    with b1:
+        st.button("Clear inputs", use_container_width=True, on_click=clear_inputs)
+    with b2:
+        st.button("Clear history", use_container_width=True, on_click=clear_history)
