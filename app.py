@@ -1,3 +1,4 @@
+import json
 import streamlit as st
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -7,22 +8,24 @@ load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite")
 
-
 def build_prompt(resume, jd):
-    return f"""
-Compare this resume against this job description.
+    return f"""You are a resume analyst. Compare the resume against the job description.
+
+Return ONLY valid JSON. No markdown, no backticks, no explanation before or after.
+
+Use exactly this structure:
+{{
+  "match_score": <number 0-100>,
+  "matching_skills": ["skill1", "skill2"],
+  "missing_skills": ["skill1", "skill2"],
+  "suggestions": ["suggestion1", "suggestion2", "suggestion3"]
+}}
 
 RESUME:
 {resume}
 
 JOB DESCRIPTION:
 {jd}
-
-Give your answer as plain text:
-- Match score out of 100
-- Skills that match
-- Skills that are missing
-- 3 suggestions to improve the resume
 """
 
 
@@ -40,6 +43,30 @@ if st.button("Analyze"):
                 prompt = build_prompt(resume, jd)
                 model = genai.GenerativeModel(MODEL_NAME)
                 response = model.generate_content(prompt)
-                st.write(response.text)
+
+                raw = response.text.strip()
+                raw = raw.replace("```json", "").replace("```", "").strip()
+
+                data = json.loads(raw)
+                st.metric("Match Score", f"{data['match_score']}/100")
+                st.progress(data['match_score'] / 100)
+
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.subheader("✅ Matching")
+                    for s in data['matching_skills']:
+                        st.write("•", s)
+                with col2:
+                    st.subheader("❌ Missing")
+                    for s in data['missing_skills']:
+                        st.write("•", s)
+
+                st.subheader("💡 Suggestions")
+                for i, s in enumerate(data['suggestions'], 1):
+                    st.write(f"{i}. {s}")
+
+            except json.JSONDecodeError:
+                st.error("Model ne valid JSON nahi diya")
+                st.code(raw)
             except Exception as e:
                 st.error(f"Failed: {e}")
